@@ -3,7 +3,8 @@ This is empty on purpose! Your code to build the resume will go here.
  */
 
 var resumeDetails = {
-    "work" : [
+    "work" : {
+        "jobs": [
             {
                 "employer": "Eckoh Plc",
                 "title": "Developer",
@@ -16,10 +17,12 @@ var resumeDetails = {
                 "title": "Complaint Handler",
                 "location": "Newport, Wales",
                 "dates": "08-2011 to 02-2012",
-                "description": "handling customer complaints via calls, letter and emails in accordance with the FSA regulations"
+                "description": "Handling customer complaints via calls, letter and emails in accordance with the FSA regulations"
             }
-        ],
-    "projects": [
+        ]
+    },
+    "projects": {
+        "projects": [
            {
                 "title": "Omni Food",
                 "dates": "Jan, 2017",
@@ -44,7 +47,8 @@ var resumeDetails = {
                 "description": "A polls application built using react native that runs both on iOS and Android devices.",
                 "images": ["images/pollmaker_web.jpg","images/pollmaker_mob.jpg"]
             }
-        ],
+        ]
+    },
     "bio": {
             "name": "Buwa Okome",
             "role": "Web Developer",
@@ -112,13 +116,76 @@ HTMLheaderRole = HTMLheaderRole.replace("%data%", formattedRole);
 $("#header").prepend(HTMLheaderRole);
 $("#header").prepend(HTMLheaderName);
 
+
 if(resumeDetails['bio']['skills']){
-    console.log('yay');
     var formattedSkills = '';
     $("#header").append(HTMLskillsStart);
     for(var i = 0; i < resumeDetails['bio']['skills'].length; i++){
         formattedSkills = HTMLskills.replace("%data%", resumeDetails.bio.skills[i]);
         $("#skills").append(formattedSkills);
-    }
-    
+    }  
 }
+
+function displayWork(){
+    for(obj in resumeDetails['work'].jobs){
+        if(resumeDetails['work'].jobs.hasOwnProperty(obj)){
+            $("#workExperience").append(HTMLworkStart);
+
+            var formattedEmployer = HTMLworkEmployer.replace("%data%", resumeDetails.work.jobs[obj].employer);
+            var formattedTitle = HTMLworkTitle.replace("%data%", resumeDetails.work.jobs[obj].title);
+            var formattedWorkDates = HTMLworkDates.replace("%data%", resumeDetails.work.jobs[obj].dates);
+            var formattedWorkLocation = HTMLworkLocation.replace("%data%", resumeDetails.work.jobs[obj].location);
+            var formattedWorkDescription = HTMLworkDescription.replace("%data%", resumeDetails.work.jobs[obj].description);
+
+            $(".work-entry:last").append(formattedEmployer + formattedTitle);
+            $(".work-entry:last").append(formattedWorkDates + formattedWorkLocation);
+            $(".work-entry:last").append(formattedWorkDescription);
+        }
+    }
+}
+
+displayWork();
+
+$(document).click(function(loc){
+    logClicks(loc.pageX, loc.pageY);
+});
+
+function inName(){
+    var name = resumeDetails['bio']['name'].split(" ");
+    
+    var formattedFname = name[0].charAt(0).toUpperCase() + fname.slice(1);
+    var formattedLname = name[1].toUpperCase();
+    
+    return formattedFname + ' ' + formattedLname;
+}
+
+$("#main").append(internationalizeButton);
+
+resumeDetails.projects.display = function(){
+    for(var i = 0; i < resumeDetails.projects.projects.length; i++){
+        $("#projects").append(HTMLprojectStart);
+        
+        var formattedProjectTitle = HTMLprojectTitle.replace("%data%", resumeDetails.projects.projects[i].title);
+        $(".project-entry:last").append(formattedProjectTitle);
+        
+        var formattedProjectDates = HTMLprojectDates.replace("%data%", resumeDetails.projects.projects[i].dates);
+        $(".project-entry:last").append(formattedProjectDates);
+        
+        var formattedProjectDescription = HTMLprojectDescription.replace("%data%", resumeDetails.projects.projects[i].description);
+        $(".project-entry:last").append(formattedProjectDescription);
+        
+        if(resumeDetails.projects.projects[i].images.length > 0){
+            for(var j = 0; j < resumeDetails.projects.projects[i].images.length; j++){
+                var formattedProjectImages = HTMLprojectImage.replace("%data%", resumeDetails.projects.projects[i].images[j]);
+                $(".project-entry:last").append(formattedProjectImages);
+            }               
+        }
+    }
+}
+resumeDetails.projects.display();
+
+$(document).click(function(loc){
+   console.log(loc.pageX, loc.pageY); 
+});
+
+$("#mapDiv").append(googleMap);
